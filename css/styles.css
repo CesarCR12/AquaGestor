@@ -1,11 +1,23 @@
 body {
-    padding-top: 56px;
+    padding-top: 0px;
 }
 
 .container {
     margin-top: 20px;
+    
+}
+
+.container h1, p{
+    text-align: center
 }
 
 h1 {
     color: #007bff;
+}
+
+.logo {
+    width: 60px; /* Ajusta el tamaño como necesites */
+    height: 60px; /* Asegúrate de mantener la proporción */
+    border-radius: 50%; /* Esto hace que sea redondeado */
+    object-fit: cover; /* Asegura que la imagen cubra el área del contenedor */
 }
