@@ -10,6 +10,7 @@ if (!Auth::isLoggedIn() || !check_login()) {
 $idUsuario = Auth::getUserId();
 
 function deleteUser($conn, $id) {
+    backupUserData($conn, $id);
     $stmt = $conn->prepare("DELETE FROM Usuarios WHERE idUsuario = ?");
     $stmt->bind_param("i", $id);
     return $stmt->execute();
@@ -41,7 +42,6 @@ function backupUserData($conn, $id) {
 }
 
 if (deleteUser($conn, $idUsuario)) {
-    backupUserData($conn, $idUsuario);
     Auth::logout();
     header("Location: ../pages/index.html?message=Cuenta eliminada exitosamente.");
 } else {
