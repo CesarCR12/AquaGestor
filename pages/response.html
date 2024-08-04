@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado de la Acción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="card-title" id="message">Cargando...</h4>
+                <p class="card-text">Serás redirigido automáticamente al Inicio en <span id="countdown" style="color: red;">5</span> segundos...</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('../components/response.php')
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    document.getElementById('message').textContent = jsonResponse.message;
+                    let countdown = 5;
+                    document.getElementById('countdown').textContent = countdown;
+                    const interval = setInterval(() => {
+                        countdown--;
+                        document.getElementById('countdown').textContent = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(interval);
+                            window.location.href = jsonResponse.redirectUrl; 
+                        }
+                    }, 1000);
+                });
+        });
+    </script>
+</body>
+</html>

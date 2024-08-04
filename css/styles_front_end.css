@@ -1,0 +1,195 @@
+body {
+    font-family: Arial, sans-serif;
+    padding-top: 0px;
+}
+
+.container {
+    margin-top: 20px;
+
+}
+
+.container h1,
+p {
+    text-align: center
+}
+
+h1 {
+    color: #007bff;
+}
+
+/* Animación del Gradient */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 100%;
+    }
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-image: linear-gradient(to right bottom, #2a5f6e, #1f5165, #17435b, #143550, #132744,
+                                    #2a5f6e, #1f5165, #17435b, #143550, #132744, #2a5f6e, 
+                                    #1f5165);
+    background-size: 200% 200%;
+    animation: gradientAnimation 15s ease-in-out infinite; 
+    color: white;
+    box-shadow: 0 4px 2px -2px gray;
+    padding: 0.5rem 1rem;
+}
+
+.navbar .logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f0f0f0; 
+}
+
+.navbar .navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .nav-link {
+    color: #f0f0f0; 
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.navbar .nav-link:hover {
+    background-color: #727272; 
+}
+
+.navbar .dropdown-menu {
+    right: 0;
+    left: auto;
+    background-color: #444444; 
+    border: 1px solid #242222; 
+}
+
+.navbar .dropdown-item {
+    color: #f0f0f0;
+}
+
+.navbar .dropdown-item:hover {
+    background-color: #333333;
+}
+
+.navbar-toggler {
+    border: none;
+    background: none;
+    color: #f0f0f0; 
+}
+
+.navbar-toggler-icon {
+    background-image: none;
+    border: 1px solid #f0f0f0; 
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+}
+
+.navbar-toggler-icon::before {
+    content: "\f0c9";
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 16px;
+    color: #f0f0f0; 
+}
+
+/* Login, registro y perfil*/
+
+.error-message-login {
+    color: red;
+    font-weight: bold;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+.center-container-2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+}
+
+.center-container-3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.form-control:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+
+.form-control {
+    max-width: 400px;
+}
+
+
+/* Admin */
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.table {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.table thead th,
+.table tbody td {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.button-group a {
+    width: 100%;
+    text-align: center;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+}
+
+/*DATABASE*/
+#alert_error_database {
+    width: 500px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
