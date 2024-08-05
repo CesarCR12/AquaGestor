@@ -7,12 +7,18 @@ if (Auth::isLoggedIn() == false || Auth::getUserRole() === 'user' || !check_logi
     exit();
 }
 
+
 $limit = 50; 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $limit;
 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
 
 $cacheDir = "../cache/";
+
+if (!is_dir($cacheDir) && !mkdir($cacheDir, 0755, true)) {
+    echo('No se pudo crear el directorio de cache.');
+}
+
 $cacheFile = "{$cacheDir}users_page_{$page}_search_" . md5($search) . ".html";
 $maxCacheFiles = 10;
 

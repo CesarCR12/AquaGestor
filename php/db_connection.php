@@ -69,7 +69,7 @@ try {
     }
 
 
-    //La estrella no es recomendable si se tiene mas usuarios ejemplo: 1,00,000,000 de Usuarios 
+    //La estrella no es recomendable si se tiene mas usuarios ejemplo: 1,000,000,000 de Usuarios 
     //Seria demasiado lento y muy costoso, preferiblemente aplicar algun procedimiento o vista para este caso
     //o algo ya pre cargado y de rapida acción
     $query = "SELECT COUNT(*) AS master_count FROM Usuarios WHERE rol = 'master'";

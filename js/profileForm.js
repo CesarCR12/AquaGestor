@@ -1,13 +1,18 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('updateFotoPerfil').addEventListener('change', function() {
-        document.getElementById('fotoPerfil').disabled = !this.checked;
-    });
-
-    document.getElementById('updateNombreUsuario').addEventListener('change', function() {
-        document.getElementById('nombreUsuario').disabled = !this.checked;
-    });
-
-    document.getElementById('updateContrasena').addEventListener('change', function() {
-        document.getElementById('contrasena').disabled = !this.checked;
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    setupCheckboxToggle('updateFotoPerfil', 'fotoPerfil');
+    setupCheckboxToggle('updateNombreUsuario', 'nombreUsuario');
+    setupCheckboxToggle('updateContrasena', 'contrasena');
 });
+
+function setupCheckboxToggle(checkboxId, inputId) {
+    const checkbox = document.getElementById(checkboxId);
+    const inputField = document.getElementById(inputId);
+    if (checkbox && inputField) {
+        checkbox.addEventListener('change', function () {
+            inputField.disabled = !this.checked;
+        });
+
+        inputField.disabled = !checkbox.checked;
+    }
+}
+

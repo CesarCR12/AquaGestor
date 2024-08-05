@@ -47,6 +47,13 @@ function backupUserData($conn, $id) {
     $stmt->execute();
     $userData['reportes'] = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+    $backupDir = "../backup";
+
+    if (!is_dir($backupDir) && !mkdir($backupDir, 0755, true)) {
+        echo( 'No se pudo crear el directorio de respaldo.');
+        exit();
+    }
+
     $jsonFileName = "../backup/user_{$id}.json";
     file_put_contents($jsonFileName, json_encode($userData));
 }

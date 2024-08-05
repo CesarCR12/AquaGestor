@@ -37,7 +37,7 @@ CREATE TABLE Usuarios (
     email VARCHAR(255) NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
     rol ENUM('user', 'admin', 'master') NOT NULL DEFAULT 'user',
-    fotoPerfil VARCHAR(255) NULL,
+    fotoPerfil VARCHAR(255) NOT NULL,
     UNIQUE (nombreUsuario),
     UNIQUE (email)
 );
@@ -95,11 +95,12 @@ CREATE PROCEDURE InsertarUsuario(
     IN p_nombreUsuario VARCHAR(255),
     IN p_email VARCHAR(255),
     IN p_contrasena VARCHAR(255),
-    IN p_rol ENUM('user', 'admin', 'master')
+    IN p_rol ENUM('user', 'admin', 'master'),
+    IN p_fotoPerfil VARCHAR(255)
 )
 BEGIN
-    INSERT INTO Usuarios (nombreUsuario, email, contrasena, rol) 
-    VALUES (p_nombreUsuario, p_email, p_contrasena, p_rol);
+    INSERT INTO Usuarios (nombreUsuario, email, contrasena, rol, fotoPerfil) 
+    VALUES (p_nombreUsuario, p_email, p_contrasena, p_rol, p_fotoPerfil);
 END; //
 
 
@@ -239,4 +240,4 @@ LIMIT 100;
 /*****************************LLAMADAS A PROCEDURES*****************************/
 
 /*Master12345?*/
-CALL InsertarUsuario('masterAdmin', 'master@aquagestor.com', '$2a$14$gCv/wGAX5qiw4Zcnvo0g8eby3A4/lytkzqT.7.xXQVs9SUfFcj1fm', 'master');
+CALL InsertarUsuario('masterAdmin', 'master@aquagestor.com', '$2a$14$gCv/wGAX5qiw4Zcnvo0g8eby3A4/lytkzqT.7.xXQVs9SUfFcj1fm', 'master', '../images/default-profile.png');

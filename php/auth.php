@@ -1,6 +1,6 @@
 <?php
-session_start();
 include '../php/db_connection.php';
+session_start();
 
 class Auth {
     public static function login($email, $password) {

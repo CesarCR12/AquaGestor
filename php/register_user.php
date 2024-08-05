@@ -25,9 +25,10 @@ function validateInput($nombreUsuario, $email, $password) {
 function registerUser($nombreUsuario, $email, $password) {
     global $conn;
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    $defaultProfileImage = '../images/default-profile.png'; // Ruta de la imagen de perfil predeterminada
 
-    // Se verifica si el usuario ya está registrado como master
-    $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE (nombreUsuario = ? OR email = ?) AND rol = 3");
+    // Verificación del usuario master
+    $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE (nombreUsuario = ? OR email = ?) AND rol = 'master'");
     $stmt->bind_param("ss", $nombreUsuario, $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -36,7 +37,7 @@ function registerUser($nombreUsuario, $email, $password) {
         return "Error: No puedes registrarte con este nombre de usuario o correo electrónico porque ya está registrado.";
     }
 
-    // Se verifica si el usuario o email ya están en uso
+    // Verificación del usuario o email en uso
     $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE nombreUsuario = ? OR email = ?");
     $stmt->bind_param("ss", $nombreUsuario, $email);
     $stmt->execute();
@@ -52,10 +53,10 @@ function registerUser($nombreUsuario, $email, $password) {
         }
     }
 
-    // Se registra el usuario normalmente
-    $rol = 1;
-    $stmt = $conn->prepare("INSERT INTO Usuarios (nombreUsuario, email, contrasena, rol) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $nombreUsuario, $email, $hashedPassword, $rol);
+    // Registro del usuario
+    $rol = 'user'; // Se asume que 'user' es el valor por defecto para los usuarios normales
+    $stmt = $conn->prepare("INSERT INTO Usuarios (nombreUsuario, email, contrasena, rol, fotoPerfil) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $nombreUsuario, $email, $hashedPassword, $rol, $defaultProfileImage);
 
     if ($stmt->execute()) {
         return "Usuario registrado exitosamente.";
@@ -84,4 +85,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ../pages/response.html'); 
     exit();
 }
-?>
