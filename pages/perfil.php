@@ -35,7 +35,7 @@ $contrasena = '';
 
 <body>
     <div id="navbar-placeholder"></div>
-    <div class="center-container-3" style="<?php echo $usuario['fotoPerfil'] ? 'height: 120vh;' : ''; ?>">
+    <div class="center-container-3" style="height: 80vh;">
         <div class="w-100 text-center" style="max-width: 400px;">
             <h1 class="mb-2 mt-5">Perfil de Usuario</h1>
             <form class="mb-3 mt-3" id="sign_in_form" action="../php/update_profile.php" method="POST" enctype="multipart/form-data">

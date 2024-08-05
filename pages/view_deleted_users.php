@@ -8,6 +8,13 @@ if (!Auth::isLoggedIn() || Auth::getUserRole() === 'user' || !check_login()) {
 }
 
 $backupDir = '../backup/';
+
+
+if (!is_dir($backupDir) && !mkdir($backupDir, 0755, true)) {
+    echo( 'No se pudo crear el directorio de respaldo.');
+    exit();
+}
+
 $files = array_diff(scandir($backupDir), array('..', '.'));
 
 $users = [];

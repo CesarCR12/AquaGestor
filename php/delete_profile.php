@@ -9,17 +9,108 @@ if (!Auth::isLoggedIn() || !check_login()) {
 
 $idUsuario = Auth::getUserId();
 
-function deleteUser($conn, $id) {
-    backupUserData($conn, $id);
-    $stmt = $conn->prepare("DELETE FROM Usuarios WHERE idUsuario = ?");
-    $stmt->bind_param("i", $id);
-    return $stmt->execute();
+try {
+    $conn->begin_transaction();
+
+    if (deleteUser($conn, $idUsuario)) {
+        $conn->commit();
+        Auth::logout();
+        header("Location: ../pages/index.html?message=Cuenta eliminada exitosamente.");
+        exit();
+    } else {
+        $conn->rollback(); 
+        throw new Exception("Error al eliminar la cuenta.");
+    }
+} catch (Exception $e) {
+    $conn->rollback(); 
+    error_log($e->getMessage()); 
+    echo "Ha ocurrido un error: " . $e->getMessage();
 }
+
+function deleteUser($conn, $id) {
+    try {
+        backupUserData($conn, $id);
+        $response = deleteUserProfileDirectory($id);
+
+        $stmt = $conn->prepare("DELETE FROM Usuarios WHERE idUsuario = ?");
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta SQL: " . $conn->error);
+        }
+        
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            throw new Exception("Error al ejecutar la consulta SQL: " . $stmt->error);
+        }
+
+        return true;
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        return false;
+    }
+}
+
 function fetchUserById($conn, $id) {
-    $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE idUsuario = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
+    try {
+        $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE idUsuario = ?");
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta SQL: " . $conn->error);
+        }
+        
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            throw new Exception("Error al ejecutar la consulta SQL: " . $stmt->error);
+        }
+        
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        return null;
+    }
+}
+
+function deleteUserProfileDirectory($userId) {
+    $uploadEspecificDir = '../uploads/user_' . $userId . '_profile_img/';
+    
+    if (is_dir($uploadEspecificDir)) {
+        try {
+            if (deleteDirectory($uploadEspecificDir)) {
+                return 'El directorio y su contenido fueron eliminados exitosamente.';
+            } else {
+                throw new Exception('No se pudo eliminar el directorio de subida específico del usuario.');
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return $e->getMessage();
+        }
+    } else {
+        return 'El directorio no existe.';
+    }
+}
+
+function deleteDirectory($dir) {
+    if (!is_dir($dir)) {
+        return false;
+    }
+
+    $files = array_diff(scandir($dir), array('.', '..'));
+
+    foreach ($files as $file) {
+        $filePath = $dir . '/' . $file;
+        if (is_dir($filePath)) {
+            deleteDirectory($filePath); 
+        } else {
+            if (!unlink($filePath)) {
+                throw new Exception("No se pudo eliminar el archivo: $filePath");
+            }
+        }
+    }
+
+    if (!rmdir($dir)) {
+        throw new Exception("No se pudo eliminar el directorio: $dir");
+    }
+
+    return true;
 }
 
 function backupUserData($conn, $id) {
@@ -40,18 +131,12 @@ function backupUserData($conn, $id) {
     $backupDir = "../backup";
 
     if (!is_dir($backupDir) && !mkdir($backupDir, 0755, true)) {
-        echo ( 'No se pudo crear el directorio de respaldo.');
-        exit();
+        throw new Exception('No se pudo crear el directorio de respaldo.');
     }
 
     $jsonFileName = "../backup/user_{$id}.json";
-    file_put_contents($jsonFileName, json_encode($userData));
-}
-
-if (deleteUser($conn, $idUsuario)) {
-    Auth::logout();
-    header("Location: ../pages/index.html?message=Cuenta eliminada exitosamente.");
-} else {
-    echo "Error al eliminar la cuenta.";
+    if (file_put_contents($jsonFileName, json_encode($userData)) === false) {
+        throw new Exception("No se pudo crear el archivo de respaldo: $jsonFileName");
+    }
 }
 ?>

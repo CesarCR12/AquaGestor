@@ -41,7 +41,13 @@ function handleFileUpload($fileInputName, $currentFilePath = null) {
             sendJsonResponse('error', 'No se pudo crear el directorio de subida.');
         }
 
-        $filePath = $uploadDir . basename($_FILES[$fileInputName]['name']);
+        $id  = Auth::getUserId();
+        $uploadEspecificDir = '../uploads/user_'.$id.'_profile_img/';
+        if (!is_dir($uploadEspecificDir) && !mkdir($uploadEspecificDir, 0755, true)) {
+            sendJsonResponse('error', 'No se pudo crear el directorio de subida especifico del usuario.');
+        }
+
+        $filePath = $uploadEspecificDir . basename($_FILES[$fileInputName]['name']);
         if (!move_uploaded_file($_FILES[$fileInputName]['tmp_name'], $filePath)) {
             sendJsonResponse('error', 'Error al subir la imagen.');
         }
@@ -49,7 +55,7 @@ function handleFileUpload($fileInputName, $currentFilePath = null) {
         if ($currentFilePath && file_exists($currentFilePath) && $currentFilePath !== $defaultImagePath) {
             unlink($currentFilePath);
         }
-
+        
         return $filePath;
     }
 
