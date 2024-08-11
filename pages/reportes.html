@@ -11,14 +11,66 @@
 <body>
     <div id="navbar-placeholder"></div>
 
-    <div class="container">
+    <div class="container mt-4">
         <h1>Reportes</h1>
-        <p>Visualiza los reportes de consumo de agua.</p>
-        <!-- tablas, etc. -->
+        <p>Visualiza y envía reportes de consumo de agua.</p>
+
+        <!-- Mostrar mensajes de éxito o error -->
+        <div id="mensaje-alerta"></div>
+
+        <div class="row">
+            <!-- Contenedor específico para mover solo el formulario -->
+            <div class="col-md-6 formulario-wrapper">
+                <form id="formularioReporte" action="../php/procesar_reporte.php" method="POST">
+                    <div class="mb-3">
+                        <label for="mensajeReporte" class="form-label">Mensaje del Reporte</label>
+                        <textarea class="form-control" id="mensajeReporte" name="mensajeReporte" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaReporte" class="form-label">Fecha del Reporte</label>
+                        <input type="date" class="form-control" id="fechaReporte" name="fechaReporte" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+                </form>
+            </div>
+    
+            <!-- Imagen al lado del formulario -->
+            <div class="col-md-6">
+                <img src="https://www.caracteristicasdel.com/wp-content/uploads/2021/04/Reporte.jpg" alt="Imagen de Reporte" class="img-fluid">
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/loadNavbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar mensajes de sessionStorage
+            const mensajeExito = sessionStorage.getItem('mensajeExito');
+            const mensajeError = sessionStorage.getItem('mensajeError');
+
+            if (mensajeExito) {
+                const mensajeAlerta = document.getElementById('mensaje-alerta');
+                mensajeAlerta.innerHTML = `<div class="alert alert-success">${mensajeExito}</div>`;
+                setTimeout(() => {
+                    mensajeAlerta.innerHTML = ''; // Limpia el mensaje después de 5 segundos
+                }, 5000);
+                sessionStorage.removeItem('mensajeExito'); // Elimina el mensaje de sessionStorage
+            }
+
+            if (mensajeError) {
+                const mensajeAlerta = document.getElementById('mensaje-alerta');
+                mensajeAlerta.innerHTML = `<div class="alert alert-danger">${mensajeError}</div>`;
+                setTimeout(() => {
+                    mensajeAlerta.innerHTML = ''; // Limpia el mensaje después de 5 segundos
+                }, 5000);
+                sessionStorage.removeItem('mensajeError'); // Elimina el mensaje de sessionStorage
+            }
+        });
+    </script>
 </body>
 </html>
+
+
+
