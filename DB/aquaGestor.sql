@@ -31,6 +31,7 @@
 CREATE DATABASE AquaGestor;
 USE AquaGestor;
 
+
 CREATE TABLE Usuarios (
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
     nombreUsuario VARCHAR(255) NOT NULL,
@@ -47,7 +48,7 @@ CREATE TABLE Alertas (
     idAlerta INT AUTO_INCREMENT PRIMARY KEY,
     idUsuario INT,
     mensaje TEXT NOT NULL,
-    fechaAlerta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fechaAlerta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
 );
 
@@ -56,13 +57,13 @@ CREATE TABLE Educacion (
     idEducacion INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     contenido TEXT NOT NULL,
-    fechaPublicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fechaPublicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE RegistroConsumoAgua (
     idConsumo INT AUTO_INCREMENT PRIMARY KEY,
     idUsuario INT,
-    fecha DATE NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Cantidad VARCHAR(255) NOT NULL,
     ubicacion VARCHAR(255) NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
@@ -72,8 +73,8 @@ CREATE TABLE Reportes (
     idReporte INT AUTO_INCREMENT PRIMARY KEY,
     idUsuario INT,
     mensajeReporte TEXT NOT NULL,
-    fechaReporte TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    estado BOOLEAN NOT NULL,
+    fechaReporte DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    estado ENUM('Pendiente', 'Resuelto', 'ERROR/NULL') NOT NULL DEFAULT 'Pendiente',
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
 );
 
@@ -82,7 +83,7 @@ CREATE TABLE Recomendaciones (
     idUsuario INT,
     idReporte INT,
     mensajeRec TEXT NOT NULL,
-    fechaRec TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fechaRec DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idReporte) REFERENCES Reportes(idReporte)
 );
@@ -152,6 +153,22 @@ END; //
 
 DELIMITER ;
 
+/************/
+
+DELIMITER //
+
+CREATE TRIGGER before_insert_reportes
+BEFORE INSERT ON Reportes
+FOR EACH ROW
+BEGIN
+    IF NEW.estado NOT IN ('Pendiente', 'Resuelto') THEN
+        SET NEW.estado = 'ERROR/NULL';
+    END IF;
+END;
+
+//
+
+DELIMITER ;
 
 /*******************************************************************************/
 
@@ -172,16 +189,23 @@ WHERE rol = 'admin'
 LIMIT 100;
 
 
-
 /*Alertas*/
 CREATE VIEW VistaAlertasRecientes AS
-SELECT idAlerta, idUsuario, mensaje, fechaAlerta
+SELECT 
+    idAlerta, 
+    idUsuario, 
+    mensaje, 
+    DATE_FORMAT(fechaAlerta, '%Y-%m-%d %H:%i') AS fechaAlerta
 FROM Alertas
 WHERE fechaAlerta >= CURDATE() - INTERVAL 30 DAY
 LIMIT 100;
 
 CREATE VIEW VistaAlertasPorUsuario AS
-SELECT idAlerta, idUsuario, mensaje, fechaAlerta
+SELECT 
+    idAlerta, 
+    idUsuario, 
+    mensaje, 
+    DATE_FORMAT(fechaAlerta, '%Y-%m-%d %H:%i') AS fechaAlerta
 FROM Alertas
 ORDER BY idUsuario, fechaAlerta DESC
 LIMIT 100;
@@ -189,31 +213,48 @@ LIMIT 100;
 
 /*Educación*/
 CREATE VIEW VistaEducacionReciente AS
-SELECT idEducacion, titulo, contenido, fechaPublicacion
+SELECT 
+    idEducacion, 
+    titulo, 
+    contenido, 
+    DATE_FORMAT(fechaPublicacion, '%Y-%m-%d %H:%i') AS fechaPublicacion
 FROM Educacion
 ORDER BY fechaPublicacion DESC
 LIMIT 100;
 
 
-
 /*Registro de Consumo de Agua*/
 CREATE VIEW VistaConsumoAguaReciente AS
-SELECT idConsumo, idUsuario, fecha, Cantidad, ubicacion
+SELECT 
+    idConsumo, 
+    idUsuario, 
+    DATE_FORMAT(fecha, '%Y-%m-%d %H:%i') AS fecha, 
+    Cantidad, 
+    ubicacion
 FROM RegistroConsumoAgua
 WHERE fecha >= CURDATE() - INTERVAL 30 DAY
 LIMIT 100;
 
 
-
 /*Reportes*/
 CREATE VIEW VistaReportesAbiertos AS
-SELECT idReporte, idUsuario, mensajeReporte, fechaReporte, estado
+SELECT 
+    idReporte, 
+    idUsuario, 
+    mensajeReporte, 
+    DATE_FORMAT(fechaReporte, '%Y-%m-%d %H:%i') AS fechaReporte, 
+    estado
 FROM Reportes
-WHERE estado = TRUE
+WHERE estado = 'Resuelto'
 LIMIT 100;
 
 CREATE VIEW VistaReportesRecientes AS
-SELECT idReporte, idUsuario, mensajeReporte, fechaReporte, estado
+SELECT 
+    idReporte, 
+    idUsuario, 
+    mensajeReporte, 
+    DATE_FORMAT(fechaReporte, '%Y-%m-%d %H:%i') AS fechaReporte, 
+    estado
 FROM Reportes
 ORDER BY fechaReporte DESC
 LIMIT 100;
@@ -221,13 +262,23 @@ LIMIT 100;
 
 /*Recomendaciones*/
 CREATE VIEW VistaRecomendacionesRecientes AS
-SELECT idRec, idUsuario, idReporte, mensajeRec, fechaRec
+SELECT 
+    idRec, 
+    idUsuario, 
+    idReporte, 
+    mensajeRec, 
+    DATE_FORMAT(fechaRec, '%Y-%m-%d %H:%i') AS fechaRec
 FROM Recomendaciones
 ORDER BY fechaRec DESC
 LIMIT 100;
 
 CREATE VIEW VistaRecomendacionesPorReporte AS
-SELECT idRec, idUsuario, idReporte, mensajeRec, fechaRec
+SELECT 
+    idRec, 
+    idUsuario, 
+    idReporte, 
+    mensajeRec, 
+    DATE_FORMAT(fechaRec, '%Y-%m-%d %H:%i') AS fechaRec
 FROM Recomendaciones
 WHERE idReporte = 1 
 LIMIT 100;

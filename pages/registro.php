@@ -1,20 +1,9 @@
 <?php
 include '../php/auth.php';
-include '../php/auth_check.php';
 
 if (Auth::isLoggedIn()) {
     Auth::logout();
 }
-
-// function debug_to_console($data)
-// {
-//     $output = $data;
-//     if (is_array($output))
-//         $output = implode(',', $output);
-
-//     echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-// }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -29,7 +18,7 @@ if (Auth::isLoggedIn()) {
 <body>
     <div id="navbar-placeholder"></div>
 
-    <div class="center-container-2">
+    <div class="center-container-3">
         <div class="w-100 text-center" style="max-width: 400px;">
             <h1 class="mb-4">Registro de Usuario</h1>
             <form id="sign_in_form" action="../php/register_user.php" method="POST">
@@ -57,5 +46,6 @@ if (Auth::isLoggedIn()) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/loadNavbar.js"></script>
     <script src="../js/validateForm.js"></script>
+    <script src="../js/handleResponse_register.js"></script>
 </body>
 </html>

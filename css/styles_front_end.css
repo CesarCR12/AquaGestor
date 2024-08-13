@@ -112,16 +112,11 @@ h1 {
 
 /* Login, registro y perfil*/
 
-.error-message-login {
-    color: red;
-    font-weight: bold;
-}
-
 .center-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50vh;
+    height: 60vh;
 }
 
 .center-container-2 {

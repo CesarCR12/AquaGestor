@@ -1,10 +1,9 @@
 <?php
-session_start();
-include '../php/db_connection.php';
+include '../php/auth.php';
 
 function validateInput($nombreUsuario, $email, $password) {
-    if (strlen($nombreUsuario) < 3 || strlen($nombreUsuario) > 50) {
-        return "El nombre de usuario debe tener entre 3 y 50 caracteres.";
+    if (strlen($nombreUsuario) < 3 || strlen($nombreUsuario) > 50 || preg_match('/[@.]/', $nombreUsuario)) {
+        return "El nombre de usuario debe tener entre 3 y 50 caracteres y no debe de contener (@ y .).";
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -25,7 +24,7 @@ function validateInput($nombreUsuario, $email, $password) {
 function registerUser($nombreUsuario, $email, $password) {
     global $conn;
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    $defaultProfileImage = '../images/default-profile.png'; // Ruta de la imagen de perfil predeterminada
+    $defaultProfileImage = '../images/default-profile.png';
 
     // Verificación del usuario master
     $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE (nombreUsuario = ? OR email = ?) AND rol = 'master'");
@@ -54,12 +53,12 @@ function registerUser($nombreUsuario, $email, $password) {
     }
 
     // Registro del usuario
-    $rol = 'user'; // Se asume que 'user' es el valor por defecto para los usuarios normales
+    $rol = 'user';
     $stmt = $conn->prepare("INSERT INTO Usuarios (nombreUsuario, email, contrasena, rol, fotoPerfil) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("sssss", $nombreUsuario, $email, $hashedPassword, $rol, $defaultProfileImage);
 
     if ($stmt->execute()) {
-        return "Usuario registrado exitosamente.";
+        return true;
     } else {
         return "Error: " . $stmt->error;
     }
@@ -72,16 +71,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $validationResult = validateInput($nombreUsuario, $email, $password);
     if ($validationResult !== true) {
-        $_SESSION['register_message'] = $validationResult;
-        $_SESSION['redirect_url'] = '../pages/index.html'; 
-        header('Location: ../pages/response.html'); 
+        echo json_encode([
+            'success' => false,
+            'message' => $validationResult
+        ]);
         exit();
     }
 
     $result = registerUser($nombreUsuario, $email, $password);
-    $_SESSION['register_message'] = $result;
-    $_SESSION['redirect_url'] = '../pages/index.html'; 
-    include '../pages/response.php';
-    header('Location: ../pages/response.html'); 
+    if ($result !== true) {
+        echo json_encode([
+            'success' => false,
+            'message' => $result
+        ]);
+        exit();
+    }
+
+    $response = Auth::login($email, $password);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Registro exitoso'
+    ]);
     exit();
 }
+
+?>

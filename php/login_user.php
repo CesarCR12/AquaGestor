@@ -7,7 +7,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'];
         $password = $_POST['password'];
         $response = Auth::login($email, $password);
-
         header('Content-Type: application/json');
         echo json_encode($response);
         exit();

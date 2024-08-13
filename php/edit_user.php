@@ -16,6 +16,16 @@ function doRedirect($message){
 }
 
 
+function validateInput($nombreUsuario, $email, $password) {
+    if (strlen($nombreUsuario) < 3 || strlen($nombreUsuario) > 50 || preg_match('/[@.]/', $nombreUsuario)) {
+        doRedirect ("El nombre de usuario debe tener entre 3 y 50 caracteres y no debe de contener (@ y .).");
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        doRedirect ("El correo electrónico no es válido.");
+    }
+}
+
 function getUserById($conn, $userId) {
     $stmt = $conn->prepare("SELECT * FROM Usuarios WHERE idUsuario = ?");
     $stmt->bind_param("i", $userId);
@@ -63,7 +73,7 @@ if (isset($_GET['id'])) {
         $rol = $_POST['rol'] ?? '';
 
         checkDuplicateAdmin($conn, $nombre, $email);
-
+        validateInput($nombre, $email);
         if ($user['rol'] === 'master') {
             doRedirect("No se puede cambiar el rol del Master Admin.");
         } else if ($user['rol'] === '' || $user['rol'] === null || $user == null) {

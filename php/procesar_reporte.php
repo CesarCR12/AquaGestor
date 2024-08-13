@@ -2,76 +2,65 @@
 include '../php/auth.php';
 include '../php/auth_check.php';
 
-if (!Auth::isLoggedIn() || Auth::getUserRole() === 'user' || !check_login()) {
+if (!Auth::isLoggedIn() || Auth::getUserRole() === null || !check_login()) {
     header("Location: ../pages/index.html");
     exit();
 }
 
-// Inicializa variables para mensajes de éxito o error
-$mensajeExito = '';
-$mensajeError = '';
+function insertarReporte($conn, $id, $mensajeReporte, $fechaReporte, $horaReporte) {
+    
+    $horaReporteObj = new DateTime($horaReporte);
+    $horaReporteFormateada = $horaReporteObj->format('H:i'); 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtiene los datos del formulario
-    $mensajeReporte = $_POST['mensajeReporte'];
-    $fechaReporte = $_POST['fechaReporte'];
+    $fechaFinal = $fechaReporte . ' ' . $horaReporteFormateada;
 
-    // Verifica si el usuario está autenticado
-    if (!Auth::isLoggedIn()) {
-        $mensajeError = "Usuario no autenticado.";
-    } else {
-        // Obtiene el ID del usuario desde la sesión
-        $idUsuario = Auth::getUserId();
+    $fechaActual = new DateTime();
+    $fechaReporteObj = new DateTime($fechaReporte);
 
-        // Establece la conexión con la base de datos
-        $conn = new mysqli($servername, $username, $password, $dbname);
+    $message_response = [
+        'status' => 'error',
+        'message' => ''
+    ];
 
-        // Verifica la conexión
-        if ($conn->connect_error) {
-            die("Conexión fallida: " . $conn->connect_error);
-        }
-
-        // Consulta SQL para insertar el reporte
-        $sql = "INSERT INTO reportes (idUsuario, mensajeReporte, fechaReporte, estado)
-                VALUES (?, ?, ?, ?)";
-
-        if ($stmt = $conn->prepare($sql)) {
-            // Vincula los parámetros
-            $estado = 'pendiente'; // Estado por defecto
-            $stmt->bind_param("isss", $idUsuario, $mensajeReporte, $fechaReporte, $estado);
-
-            // Ejecuta la consulta
-            if ($stmt->execute()) {
-                $mensajeExito = "Reporte enviado exitosamente.";
-            } else {
-                $mensajeError = "Error al ejecutar la consulta: " . $stmt->error;
-            }
-
-            // Cierra la declaración
-            $stmt->close();
-        } else {
-            // Si la preparación falló, muestra el error
-            $mensajeError = "Error al preparar la consulta: " . $conn->error;
-        }
-
-        // Cierra la conexión
-        $conn->close();
+    if ($fechaReporteObj > $fechaActual) {
+        $message_response['message'] = "La fecha del reporte no puede ser mayor a la fecha actual.";
+        return $message_response;
     }
 
-    // Guarda los mensajes en sessionStorage
-    session_start();
-    $_SESSION['mensajeExito'] = $mensajeExito;
-    $_SESSION['mensajeError'] = $mensajeError;
+    $sql = "INSERT INTO reportes (idUsuario, mensajeReporte, fechaReporte) VALUES (?, ?, ?)";
 
-    // Redirige a la página HTML
-    header("Location: ../pages/reportes.html");
-    exit();
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("iss", $id, $mensajeReporte, $fechaFinal);
+
+        if ($stmt->execute()) {
+            $message_response['status'] = 'success';
+            $message_response['message'] = "Reporte enviado exitosamente.";
+        } else {
+            $message_response['message'] = "Error al ejecutar la consulta: " . $stmt->error;
+        }
+
+        $stmt->close();
+    } else {
+        $message_response['message'] = "Error al preparar la consulta: " . $conn->error;
+    }
+
+    $conn->close();
+    return $message_response;
 }
+
+$response = [];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = Auth::getUserId();
+    $mensajeReporte = $_POST['mensajeReporte'];
+    $fechaReporte = $_POST['fechaReporte'];
+    $horaReporte = $_POST['horaReporte'];
+    
+    $response = insertarReporte($conn, $id, $mensajeReporte, $fechaReporte, $horaReporte);
+} else {
+    $response['status'] = 'error';
+    $response['message'] = "Método de solicitud no válido.";
+}
+
+echo json_encode($response);
 ?>
-
-
-
-
-
-
-

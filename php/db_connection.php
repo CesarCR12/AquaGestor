@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "12345";
+$password = "root";
 $dbname = "AquaGestor";
 
 function handleDatabaseError($message) {

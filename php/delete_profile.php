@@ -9,23 +9,6 @@ if (!Auth::isLoggedIn() || !check_login()) {
 
 $idUsuario = Auth::getUserId();
 
-try {
-    $conn->begin_transaction();
-
-    if (deleteUser($conn, $idUsuario)) {
-        $conn->commit();
-        Auth::logout();
-        header("Location: ../pages/index.html?message=Cuenta eliminada exitosamente.");
-        exit();
-    } else {
-        $conn->rollback(); 
-        throw new Exception("Error al eliminar la cuenta.");
-    }
-} catch (Exception $e) {
-    $conn->rollback(); 
-    error_log($e->getMessage()); 
-    echo "Ha ocurrido un error: " . $e->getMessage();
-}
 
 function deleteUser($conn, $id) {
     try {
@@ -139,4 +122,24 @@ function backupUserData($conn, $id) {
         throw new Exception("No se pudo crear el archivo de respaldo: $jsonFileName");
     }
 }
+
+try {
+    $conn->begin_transaction();
+
+    if (deleteUser($conn, $idUsuario)) {
+        $conn->commit();
+        Auth::logout();
+        header("Location: ../pages/index.html?message=Cuenta eliminada exitosamente.");
+        exit();
+    } else {
+        $conn->rollback(); 
+        throw new Exception("Error al eliminar la cuenta.");
+    }
+} catch (Exception $e) {
+    $conn->rollback(); 
+    error_log($e->getMessage()); 
+    echo "Ha ocurrido un error: " . $e->getMessage();
+}
+
+
 ?>
