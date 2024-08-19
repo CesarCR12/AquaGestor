@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "root";
+$password = "1234";
 $dbname = "AquaGestor";
 
 function handleDatabaseError($message) {
@@ -68,10 +68,6 @@ try {
         }
     }
 
-
-    //La estrella no es recomendable si se tiene mas usuarios ejemplo: 1,000,000,000 de Usuarios 
-    //Seria demasiado lento y muy costoso, preferiblemente aplicar algun procedimiento o vista para este caso
-    //o algo ya pre cargado y de rapida acción
     $query = "SELECT COUNT(*) AS master_count FROM Usuarios WHERE rol = 'master'";
     $result = $conn->query($query);
 

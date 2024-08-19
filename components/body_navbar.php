@@ -40,7 +40,7 @@ $isMaster = $isDatabaseAvailable && $isLoggedIn && Auth::getUserRole() == 'maste
                             <i class="fas fa-chart-bar"></i>
                             <span>Reportes</span>
                         </a>
-                        <a class="dropdown-item" href="../pages/configuracion_alertas.html" data-bs-toggle="tooltip" title="Configuración de Alertas">
+                        <a class="dropdown-item" href="../pages/alertas.html" data-bs-toggle="tooltip" title="Configuración de Alertas">
                             <i class="fas fa-cogs"></i>
                             <span>Alertas</span>
                         </a>

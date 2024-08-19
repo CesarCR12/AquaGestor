@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const mensajeAlerta = document.getElementById('mensaje-alerta');
     const fechaInput = document.getElementById('fechaReporte');
     const horaInput = document.getElementById('horaReporte');
+    const listaReportes = document.getElementById('lista-reportes');
 
-    if (!form || !mensajeAlerta || !fechaInput || !horaInput) {
+    if (!form || !mensajeAlerta || !fechaInput || !horaInput || !listaReportes) {
         console.error('Elemento(s) no encontrado(s)');
         return;
     }
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         day: '2-digit'
     }).split('/').reverse().join('-');
 
-    const horaActual = ahora.toTimeString().split(' ')[0].substring(0, 5); 
+    const horaActual = ahora.toTimeString().split(' ')[0].substring(0, 5);
 
     fechaInput.setAttribute('max', hoy);
 
@@ -25,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
 
         const formData = new FormData(form);
-
         const fechaSeleccionada = fechaInput.value;
         const horaSeleccionada = horaInput.value;
 
@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (fechaSeleccionada === hoy && horaSeleccionada > horaActual) {
             mostrarMensaje('La hora del reporte no puede ser mayor a la hora actual.', 'danger');
         } else {
+            console.log('Datos enviados:', {
+                mensajeReporte: formData.get('mensajeReporte'),
+                fechaReporte: formData.get('fechaReporte'),
+                horaReporte: formData.get('horaReporte')
+            });
             doReport(formData);
         }
     });
@@ -50,15 +55,58 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            const tipo = data.status === 'success' ? 'success' : 'danger';
-            mostrarMensaje(data.message, tipo);
-            form.reset();
+        .then(response => response.text())
+        .then(text => {
+            console.log('Respuesta cruda:', text);
+            try {
+                const data = JSON.parse(text);
+                const tipo = data.status === 'success' ? 'success' : 'danger';
+                mostrarMensaje(data.message, tipo);
+                form.reset();
+                cargarReportes();
+            } catch (error) {
+                console.error('Error al analizar JSON:', error);
+                mostrarMensaje('Respuesta del servidor no es válida.', 'danger');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
             mostrarMensaje('Error al enviar el reporte.', 'danger');
         });
     }
+
+    function cargarReportes() {
+        fetch('../php/obtener_reportes.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    listaReportes.innerHTML = '';
+                    data.data.forEach(reporte => {
+                        const item = document.createElement('li');
+                        item.className = 'list-group-item';
+                        item.innerHTML = `
+                            <strong>${reporte.fechaReporte} ${reporte.horaReporte}</strong><br>
+                            ${reporte.mensajeReporte}
+                        `;
+                        listaReportes.appendChild(item);
+                    });
+                } else {
+                    listaReportes.innerHTML = `<li class="list-group-item text-danger">${data.message}</li>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                listaReportes.innerHTML = `<li class="list-group-item text-danger">Error al cargar los reportes.</li>`;
+            });
+    }
+
+    cargarReportes();
 });
+
+
+
+
+
+
+
+

@@ -7,32 +7,28 @@ if (!Auth::isLoggedIn() || Auth::getUserRole() === null || !check_login()) {
     exit();
 }
 
-function insertarReporte($conn, $id, $mensajeReporte, $fechaReporte, $horaReporte) {
-    $horaReporteObj = new DateTime($horaReporte);
-    $horaReporteFormateada = $horaReporteObj->format('H:i'); 
-    $fechaFinal = $fechaReporte . ' ' . $horaReporteFormateada;
-    
+function insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta) {
     $fechaActual = new DateTime();
-    $fechaReporteObj = new DateTime($fechaReporte);
+    $fechaAlertaObj = new DateTime($fechaAlerta);
 
     $message_response = [
         'status' => 'error',
         'message' => ''
     ];
 
-    if ($fechaReporteObj > $fechaActual) {
-        $message_response['message'] = "La fecha del reporte no puede ser mayor a la fecha actual.";
+    if ($fechaAlertaObj > $fechaActual) {
+        $message_response['message'] = "La fecha de la alerta no puede ser mayor a la fecha actual.";
         return $message_response;
     }
 
-    $sql = "INSERT INTO reportes (idUsuario, mensajeReporte, fechaReporte, horaReporte) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO alertas (idUsuario, mensaje, fechaAlerta) VALUES (?, ?, ?)";
 
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("isss", $id, $mensajeReporte, $fechaFinal, $horaReporte);
+        $stmt->bind_param("iss", $id, $mensajeAlerta, $fechaAlerta);
 
         if ($stmt->execute()) {
             $message_response['status'] = 'success';
-            $message_response['message'] = "Reporte enviado exitosamente.";
+            $message_response['message'] = "Alerta enviada exitosamente.";
         } else {
             $message_response['message'] = "Error al ejecutar la consulta: " . $stmt->error;
         }
@@ -50,11 +46,10 @@ $response = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = Auth::getUserId();
-    $mensajeReporte = $_POST['mensajeReporte'];
-    $fechaReporte = $_POST['fechaReporte'];
-    $horaReporte = $_POST['horaReporte'];
-    
-    $response = insertarReporte($conn, $id, $mensajeReporte, $fechaReporte, $horaReporte);
+    $mensajeAlerta = $_POST['mensajeAlerta'];
+    $fechaAlerta = $_POST['fechaAlerta'];
+
+    $response = insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta);
 } else {
     $response['status'] = 'error';
     $response['message'] = "Método de solicitud no válido.";
@@ -62,13 +57,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 echo json_encode($response);
 ?>
-
-
-
-
-
-
-
-
-
-
