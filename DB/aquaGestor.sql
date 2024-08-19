@@ -27,10 +27,10 @@
 
 */
 
-
 CREATE DATABASE AquaGestor;
 USE AquaGestor;
 
+/*******************************TABLAS*******************************/
 
 CREATE TABLE Usuarios (
     idUsuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,6 +43,14 @@ CREATE TABLE Usuarios (
     UNIQUE (email)
 );
 
+CREATE TABLE Soporte (
+    idSoporte INT AUTO_INCREMENT PRIMARY KEY,
+    idUsuario INT,
+    mensaje VARCHAR(255) NOT NULL,
+    asunto VARCHAR(255) NOT NULL,
+    accion ENUM('Pendiente', 'Resuelto') NOT NULL DEFAULT 'Pendiente',
+    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
+);
 
 CREATE TABLE Alertas (
     idAlerta INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,14 +58,6 @@ CREATE TABLE Alertas (
     mensaje TEXT NOT NULL,
     fechaAlerta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
-);
-
-
-CREATE TABLE Educacion (
-    idEducacion INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    contenido TEXT NOT NULL,
-    fechaPublicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE RegistroConsumoAgua (
@@ -74,7 +74,8 @@ CREATE TABLE Reportes (
     idUsuario INT,
     mensajeReporte TEXT NOT NULL,
     fechaReporte DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    estado ENUM('Pendiente', 'Resuelto', 'ERROR/NULL') NOT NULL DEFAULT 'Pendiente',
+    estado ENUM('Pendiente', 'Resuelto') NOT NULL DEFAULT 'Pendiente',
+    estadoUsuario ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
 );
 
@@ -84,9 +85,11 @@ CREATE TABLE Recomendaciones (
     idReporte INT,
     mensajeRec TEXT NOT NULL,
     fechaRec DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    estadoUsuario ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
     FOREIGN KEY (idReporte) REFERENCES Reportes(idReporte)
 );
+
 
 /*******************************STORED PROCEDURES*******************************/
 
