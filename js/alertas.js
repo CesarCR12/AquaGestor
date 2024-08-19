@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const mensajeAlerta = document.getElementById('mensaje-alerta');
     const fechaInput = document.getElementById('fechaAlerta');
     const horaInput = document.getElementById('horaAlerta');
+    const listaAlertas = document.getElementById('lista-alertas');
 
-    if (!form || !mensajeAlerta || !fechaInput || !horaInput) {
+    if (!form || !mensajeAlerta || !fechaInput || !horaInput || !listaAlertas) {
         console.error('Elemento(s) no encontrado(s)');
         return;
     }
@@ -55,10 +56,38 @@ document.addEventListener('DOMContentLoaded', function() {
             const tipo = data.status === 'success' ? 'success' : 'danger';
             mostrarMensaje(data.message, tipo);
             form.reset();
+            cargarAlertas(); // Cargar las alertas después de enviar una nueva
         })
         .catch(error => {
             console.error('Error:', error);
             mostrarMensaje('Error al enviar la alerta.', 'danger');
         });
     }
+
+    function cargarAlertas() {
+        fetch('../php/obtener_alertas.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    listaAlertas.innerHTML = '';
+                    data.data.forEach(alerta => {
+                        const item = document.createElement('li');
+                        item.className = 'list-group-item';
+                        item.innerHTML = `
+                            <strong>${alerta.fechaAlerta}</strong><br>
+                            <strong>${alerta.nombreUsuario}</strong>: ${alerta.mensaje}
+                        `;
+                        listaAlertas.appendChild(item);
+                    });
+                } else {
+                    listaAlertas.innerHTML = `<li class="list-group-item text-danger">${data.message}</li>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                listaAlertas.innerHTML = `<li class="list-group-item text-danger">Error al cargar las alertas.</li>`;
+            });
+    }
+
+    cargarAlertas();
 });
