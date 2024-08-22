@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "1234";
+$password = "root";
 $dbname = "AquaGestor";
 
 function handleDatabaseError($message) {
@@ -50,7 +50,7 @@ try {
     $expectedTables = [
         'usuarios',
         'alertas',
-        'educacion',
+        'soporte',
         'registroconsumoagua',
         'reportes',
         'recomendaciones'

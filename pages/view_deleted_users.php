@@ -45,7 +45,7 @@ foreach ($files as $file) {
     <div class="container mt-4">
         <h1>Usuarios Eliminados</h1>
         <div class="alert alert-info" style="text-align: center;" role="alert">
-            Aquí solo se muestran los usuarios que han sido eliminados y que tenían al menos un reporte o un consumo registrado.
+            Aquí solo se muestran los usuarios que han sido eliminados y que tenían al menos una alerta o un consumo registrado.
         </div>
 
         <?php if (empty($users)) : ?>

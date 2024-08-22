@@ -26,7 +26,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </form>
         <div class="table-responsive">
@@ -60,8 +59,9 @@
                             <td>
                                 <?php if ($row['rol'] !== 'master') : ?>
                                     <div class="button-group">
-                                        <a href="../php/edit_user.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-primary btn-sm edit-button">Editar</a>
-                                        <a href="../php/delete_user.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-danger btn-sm delete-button" data-id="<?php echo $row['idUsuario']; ?>" data-role="<?php echo $row['rol']; ?>">Eliminar</a>
+                                        <a href="../php/edit_user.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-primary btn-sm edit-button">Editar Usuario</a>
+                                        <a href="../php/delete_user.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-danger btn-sm delete-button" data-id="<?php echo $row['idUsuario']; ?>" data-role="<?php echo $row['rol']; ?>">Eliminar Usuario</a>
+                                        <a href="../pages/user_details_view.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-info btn-sm details-button">Detalles de Usuario</a>
                                     </div>
                                 <?php else : ?>
                                     <span style="display: flex; justify-content: center; align-items: center; text-align: center; gap: 10px;">No editable</span>

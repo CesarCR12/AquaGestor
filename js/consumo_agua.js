@@ -10,8 +10,8 @@ public class AdminServlet extends HttpServlet {
         int page = Integer.parseInt(pageParam);
         String search = searchParam != null ? searchParam : "";
 
-
-        String url = "jdbc:mysql://si me puede ayudar conectando esta parte seria genial;
+        //si me puede ayudar conectando esta parte seria genial;
+        String url = "jdbc:mysql:
         String usuarioDB = "tu_usuario";
         String contraseñaDB = "tu_contraseña";
         String consultaSQL = "SELECT * FROM usuarios WHERE nombreUsuario LIKE ? OR email LIKE ? LIMIT ?, 10";

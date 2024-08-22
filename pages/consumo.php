@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cantidad = $_POST['cantidad'];
         $ubicacion = $_POST['ubicacion'];
 
-        $stmt = $pdo->prepare('INSERT INTO Registro_Consumo (idUsuario, Cantidad, ubicacion, fecha) VALUES (:idUsuario, :cantidad, :ubicacion, NOW())');
+        $stmt = $pdo->prepare('INSERT INTO Registro_Consumo (idUsuario, Cantidad, ubicacion, fechaConsumo) VALUES (:idUsuario, :cantidad, :ubicacion, NOW())');
 
         $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->bindParam(':cantidad', $cantidad, PDO::PARAM_STR);

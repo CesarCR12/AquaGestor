@@ -34,12 +34,12 @@ function insertUserData($conn, $userData) {
 
 function insertConsumoData($conn, $userData, $newUserId) {
     foreach ($userData['consumo'] as $consumo) {
-        $stmt = $conn->prepare("INSERT INTO RegistroConsumoAgua (idUsuario, fecha, Cantidad, ubicacion) VALUES (?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO RegistroConsumoAgua (idUsuario, fechaConsumo, cantidad, ubicacion) VALUES (?, ?, ?, ?)");
         if (!$stmt) {
             $message = "Error en la preparación de la consulta para consumo: " . $conn->error;
             doRedirect($message);
         }
-        $stmt->bind_param("isss", $newUserId, $consumo['fecha'], $consumo['Cantidad'], $consumo['ubicacion']);
+        $stmt->bind_param("isss", $newUserId, $consumo['fechaConsumo'], $consumo['cantidad'], $consumo['ubicacion']);
         if (!$stmt->execute()) {
             $message = "Error al insertar el consumo: " . $stmt->error;
             doRedirect($message);
@@ -49,13 +49,13 @@ function insertConsumoData($conn, $userData, $newUserId) {
 }
 
 function insertReportesData($conn, $userData, $newUserId) {
-    foreach ($userData['reportes'] as $reporte) {
-        $stmt = $conn->prepare("INSERT INTO Reportes (idUsuario, mensajeReporte, fechaReporte, estado) VALUES (?, ?, ?, ?)");
+    foreach ($userData['alertas'] as $alerta) {
+        $stmt = $conn->prepare("INSERT INTO Alertas (idUsuario, mensaje, fechaAlerta) VALUES (?, ?, ?)");
         if (!$stmt) {
-            $message = "Error en la preparación de la consulta para reportes: " . $conn->error;
+            $message = "Error en la preparación de la consulta para alertas: " . $conn->error;
             doRedirect($message);
         }
-        $stmt->bind_param("issi", $newUserId, $reporte['mensajeReporte'], $reporte['fechaReporte'], $reporte['estado']);
+        $stmt->bind_param("iss", $newUserId, $alerta['mensaje'], $alerta['fechaAlerta']);
         if (!$stmt->execute()) {
             $message = "Error al insertar el reporte: " . $stmt->error;
             doRedirect($message);

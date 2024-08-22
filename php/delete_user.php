@@ -28,18 +28,16 @@ function isMasterUser($user) {
 
 function hasAssociatedRecords($conn, $id) {
     try {
-        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM RegistroConsumoAgua WHERE idUsuario = ? UNION ALL SELECT COUNT(*) FROM Reportes WHERE idUsuario = ?");
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM RegistroConsumoAgua WHERE idUsuario = ?");
         if (!$stmt) {
             throw new Exception("Error al preparar la consulta SQL: " . $conn->error);
         }
-        $stmt->bind_param("ii", $id, $id);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        while ($row = $result->fetch_assoc()) {
-            if ($row['total'] > 0) {
-                return true;
-            }
+        if ($row = $result->fetch_assoc()) {
+            return $row['total'] > 0;
         }
         return false;
     } catch (Exception $e) {
@@ -47,6 +45,7 @@ function hasAssociatedRecords($conn, $id) {
         return false;
     }
 }
+
 
 function deleteUserProfileDirectory($userId) {
     $uploadEspecificDir = '../uploads/user_' . $userId . '_profile_img/';
@@ -92,6 +91,27 @@ function deleteDirectory($dir) {
     return true;
 }
 
+function hasAssociatedAlerts($conn, $id) {
+    try {
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM Alertas WHERE idUsuario = ?");
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta SQL: " . $conn->error);
+        }
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+            return $row['total'] > 0;
+        }
+        return false;
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        return false;
+    }
+}
+
+
 function backupUserData($conn, $id) {
     try {
         $userData = [];
@@ -103,10 +123,12 @@ function backupUserData($conn, $id) {
         $stmt->execute();
         $userData['consumo'] = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-        $stmt = $conn->prepare("SELECT * FROM Reportes WHERE idUsuario = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $userData['reportes'] = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if (hasAssociatedAlerts($conn, $id) != false) {
+            $stmt = $conn->prepare("SELECT * FROM Alertas WHERE idUsuario =?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $userData['alertas'] = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        }
 
         $backupDir = "../backup";
 
@@ -143,8 +165,8 @@ function deleteUser($conn, $id) {
 }
 
 function handleDeleteUser($conn, $id) {
+    $conn->begin_transaction(); 
     try {
-        $conn->begin_transaction(); 
 
         $user = fetchUserById($conn, $id);
         if (!$user) {
@@ -157,6 +179,15 @@ function handleDeleteUser($conn, $id) {
         }
 
         if (hasAssociatedRecords($conn, $id)) {
+            $stmt = $conn->prepare("DELETE FROM RegistroConsumoAgua WHERE idUsuario = ?");
+
+            if (!$stmt) {
+                throw new Exception("Error al preparar la consulta SQL: " . $conn->error);
+            }
+            $stmt->bind_param("i", $id);
+            if (!$stmt->execute()) {
+                throw new Exception("Error al ejecutar la consulta SQL: " . $stmt->error);
+            }
             backupUserData($conn, $id);
         }
 
