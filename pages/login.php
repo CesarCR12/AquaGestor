@@ -32,7 +32,7 @@ if (Auth::isLoggedIn()) {
                     <label for="password">Contraseña</label>
                 </div>
                 <input type="hidden" name="action" value="login">
-                <button type="submit" class="btn btn-primary w-100 mt-3">Iniciar Sesión</button>
+                <button ripple type="submit" class="btn btn-primary w-100 mt-3">Iniciar Sesión</button>
             </form>
 
             <div id="error-message" class="alert alert-danger mt-3 d-none"></div>        
@@ -43,6 +43,7 @@ if (Auth::isLoggedIn()) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/loadNavbar.js"></script>
     <script src="../js/login.js"></script>
-    
+    <script src="../js/rippleEffect.js"></script>
+
 </body>
 </html>

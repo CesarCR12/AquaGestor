@@ -47,6 +47,7 @@ $isMaster = $isDatabaseAvailable && $isLoggedIn && Auth::getUserRole() == 'maste
                         <a class="dropdown-item" href="../pages/registro_consumo.html" data-bs-toggle="tooltip" title="Registro de Consumo">
                             <i class="fas fa-clipboard-list"></i>
                             <span>Consumo</span>
+                            <i class="fa-solid fa-x"></i>
                         </a>
                         <?php if ($isAdmin || $isMaster) : ?>
                             <a class="dropdown-item" href="../php/admin.php"><i class="fas fa-users-cog"></i> Editar Usuarios</a>
@@ -57,7 +58,7 @@ $isMaster = $isDatabaseAvailable && $isLoggedIn && Auth::getUserRole() == 'maste
                         </a>
                         <form method="POST" action="../php/login_user.php" class="px-4 py-2">
                             <input type="hidden" name="action" value="logout">
-                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+                            <button ripple type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
                         </form>
                     </div>
                 </li>

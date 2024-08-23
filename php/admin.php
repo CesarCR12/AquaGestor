@@ -8,7 +8,7 @@ if (Auth::isLoggedIn() == false || Auth::getUserRole() === 'user' || !check_logi
 }
 
 
-$limit = 50; 
+$limit = 10; 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $limit;
 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
@@ -54,6 +54,19 @@ $totalResult = $totalStmt->get_result();
 $totalRow = $totalResult->fetch_assoc();
 $totalUsers = $totalRow['total'];
 $totalPages = ceil($totalUsers / $limit);
+
+$max_links = 5;
+
+$start_page = max(1, $page - intval($max_links / 2));
+$end_page = min($totalPages, $page + intval($max_links / 2));
+
+if ($end_page - $start_page + 1 < $max_links) {
+    if ($start_page == 1) {
+        $end_page = min($totalPages, $start_page + $max_links - 1);
+    } else {
+        $start_page = max(1, $end_page - $max_links + 1);
+    }
+}
 
 ob_start();
 include '../pages/administracion_view.php';

@@ -120,6 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        let count_data_tables =0;
+        let count_amount_tables = [];
+        let tablasNames_toMessages ='';
         records.forEach(record => {
             const details = Object.entries(record)
                 .filter(([key]) => key !== 'filter' && key !== 'id' && key !== 'unFilter')
@@ -135,9 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     return `<li><strong>${fieldNames[key] || key}:</strong> <span class="${colorClass}">${value}</span></li>`;
                 })
                 .join('');
-
-            
-           
 
             const columnNameId = columnMapping[record.filter];
             const idColumna = record[columnNameId]; 
@@ -161,9 +161,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 </td>
             `;
             tableBody.appendChild(row);
+            tablasNames_toMessages += record.filter + ", "
+            count_data_tables +=1;  
+            count_amount_tables.push(record.filter);
         });
+        if (tablasNames_toMessages.endsWith(', ')) {
+            tablasNames_toMessages = tablasNames_toMessages.slice(0, -2);
+        }
+        updateCountMessage(count_data_tables, tablasNames_toMessages, count_amount_tables);
     }
-
+    function updateCountMessage(count, tableNames, count_amount_tables) {
+        const messageElement = document.getElementById('result-message');
+        messageElement.innerHTML =
+        `En todas las tablas encontradas hay ${count} colecciones de datos.
+            <div> Tablas encontradas: ${tableNames} </div>`;
+        if (count===1 && count_amount_tables.length ===1){
+            messageElement.innerHTML =
+            `En toda la tabla se encontro ${count} coleccion de datos.
+                <div> Tabla encontrada: ${tableNames} </div>`;
+        }if (count>1 && count_amount_tables.length ===1){
+            messageElement.innerHTML =
+            `En toda la tabla se encontro ${count} colecciones de datos.
+                <div> Tabla encontrada: ${tableNames} </div>`;
+        }
+    }
     function displayError(message) {
         tableBody.innerHTML = `
             <tr>

@@ -35,7 +35,7 @@ if (Auth::isLoggedIn()) {
                     <label for="password">Contraseña</label>
                 </div>
                 <small class="form-text text-muted">La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.</small>
-                <button type="submit" class="btn btn-primary w-100 mt-3">Registrar</button>
+                <button ripple type="submit" class="btn btn-primary w-100 mt-3">Registrar</button>
             </form>
 
             <div id="error-message" class="alert alert-danger mt-3 d-none"></div>
@@ -47,5 +47,7 @@ if (Auth::isLoggedIn()) {
     <script src="../js/loadNavbar.js"></script>
     <script src="../js/validateForm.js"></script>
     <script src="../js/handleResponse_register.js"></script>
+    <script src="../js/rippleEffect.js"></script>
+
 </body>
 </html>

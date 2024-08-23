@@ -37,7 +37,7 @@
                     </select>
                     <label for="rol">Rol</label>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+                <button ripple type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
                 <a href="../php/admin.php" class="btn btn-secondary mt-3">Cancelar</a>
             </form>
         </div>
@@ -46,6 +46,8 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/loadNavbar.js"></script>
+    <script src="../js/rippleEffect.js"></script>
+
 </body>
 
 </html>

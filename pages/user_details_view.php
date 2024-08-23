@@ -46,12 +46,12 @@
             <form id="filter-form" class="mb-4 mt-2">
                 <div class="form-floating mb-3">
                     <select class="form-select" name="filter" id="filter-select" style="max-width: 400px;">
-                        <option value="TODOS" selected>Todos</option>
-                        <option value="Recomendaciones">Recomendaciones</option>
-                        <option value="Reportes">Reportes</option>
-                        <option value="RegistroConsumoAgua">Registro de Consumo de Agua</option>
-                        <option value="Alertas">Alertas</option>
-                        <option value="Soporte">Soporte</option>
+                        <option value="TODOS" label="Todos" >Todos</option>
+                        <option value="Recomendaciones" label= "Recomendaciones">Recomendaciones</option>
+                        <option value="Reportes" label="Reportes" >Reportes</option>
+                        <option value="RegistroConsumoAgua" label="Registro de Consumo de Agua" >Registro de Consumo de Agua</option>
+                        <option value="Alertas" label= "Alertas">Alertas</option>
+                        <option value="Soporte" label= "Soporte" >Soporte</option>
                     </select>
                     <label for="filter-select" class="form-label">Filtrar por</label>
                 </div>
@@ -66,7 +66,7 @@
             </form>
         </div>
         <div class="mb-5 text-center">
-
+            <div id="result-message" class="mb-3"></div> 
             <div class="table-container">
                 <table class="table table-striped table-bordered">
                     <thead>

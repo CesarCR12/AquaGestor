@@ -76,7 +76,7 @@ $contrasena = '';
                     </div>
                 </div>
                 <div id="error-message" class="alert alert-danger mt-3 d-none"></div>
-                <button type="submit" class="btn btn-primary w-100">Actualizar Perfil</button>
+                <button ripple type="submit" class="btn btn-primary w-100">Actualizar Perfil</button>
             </form>
             <form action="../php/delete_profile.php" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu cuenta?');">
                 <button type="submit" class="btn btn-danger w-100 mt-1 mb-5 delete-button" data-id="<?php echo Auth::getUserId(); ?>" data-role="<?php echo Auth::getUserRole(); ?>">Eliminar Cuenta</button>
@@ -89,6 +89,8 @@ $contrasena = '';
     <script src="../js/loadNavbar.js"></script>
     <script src="../js/deleteUser.js"></script>
     <script src="../js/profileForm.js"></script>
+    <script src="../js/rippleEffect.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#sign_in_form').submit(function(event) {
@@ -104,6 +106,10 @@ $contrasena = '';
                         if (response.status === 'success') {
                             $('#error-message').removeClass('alert-danger').addClass('alert-success');
                             if (response.message === 'Datos actualizados correctamente') {
+                                console.log('Redireccionando a perfil...');
+                                setTimeout(() => window.location.href = "../pages/perfil.php", 2000);
+                            }
+                            if (response.message === 'No se realizaron cambios') {
                                 console.log('Redireccionando a perfil...');
                                 setTimeout(() => window.location.href = "../pages/perfil.php", 2000);
                             }
