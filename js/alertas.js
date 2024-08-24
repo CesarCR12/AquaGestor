@@ -51,12 +51,19 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            const tipo = data.status === 'success' ? 'success' : 'danger';
-            mostrarMensaje(data.message, tipo);
-            form.reset();
-            cargarAlertas(); // Cargar las alertas después de enviar una nueva
+        .then(response => response.text())
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                // console.log('Respuesta parseada:', data);
+                const tipo = data.status === 'success' ? 'success' : 'danger';
+                mostrarMensaje(data.message, tipo);
+                form.reset();
+                cargarAlertas(); // Cargar las alertas después de enviar una nueva
+            } catch (error) {
+                console.error('Error al analizar JSON:', error);
+                mostrarMensaje('Respuesta del servidor no es válida.', 'danger');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -74,8 +81,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         const item = document.createElement('li');
                         item.className = 'list-group-item';
                         item.innerHTML = `
-                            <strong>${alerta.fechaAlerta}</strong><br>
-                            <strong>${alerta.nombreUsuario}</strong>: ${alerta.mensaje}
+                            <strong>Fecha: </strong>${alerta.fechaAlerta}<br>
+                            <strong>Nombre de Usuario: </strong> ${alerta.nombreUsuario}<br>
+                            <strong>Mensaje: </strong> ${alerta.mensaje}
                         `;
                         listaAlertas.appendChild(item);
                     });

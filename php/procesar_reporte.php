@@ -11,7 +11,7 @@ function insertarReporte($conn, $id, $mensajeReporte, $fechaReporte, $horaReport
     $horaReporteObj = new DateTime($horaReporte);
     $horaReporteFormateada = $horaReporteObj->format('H:i'); 
     $fechaFinal = $fechaReporte . ' ' . $horaReporteFormateada;
-    
+
     $fechaActual = new DateTime();
     $fechaReporteObj = new DateTime($fechaReporte);
 
@@ -25,10 +25,10 @@ function insertarReporte($conn, $id, $mensajeReporte, $fechaReporte, $horaReport
         return $message_response;
     }
 
-    $sql = "INSERT INTO reportes (idUsuario, mensajeReporte, fechaReporte, horaReporte) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO reportes (idUsuario, mensajeReporte, fechaReporte) VALUES (?, ?, ?)";
 
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("isss", $id, $mensajeReporte, $fechaFinal, $horaReporte);
+        $stmt->bind_param("iss", $id, $mensajeReporte, $fechaFinal);
 
         if ($stmt->execute()) {
             $message_response['status'] = 'success';
@@ -60,7 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response['message'] = "Método de solicitud no válido.";
 }
 
+
 echo json_encode($response);
+
 ?>
 
 

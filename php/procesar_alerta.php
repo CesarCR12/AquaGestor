@@ -7,9 +7,15 @@ if (!Auth::isLoggedIn() || Auth::getUserRole() === null || !check_login()) {
     exit();
 }
 
-function insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta) {
+function insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta, $horaAlerta) {
+
+    $horalAlertaObj = new DateTime($horaAlerta);
+    $horaAlertaFormateada = $horalAlertaObj->format('H:i'); 
+    $fechaFinal = $fechaAlerta . ' ' . $horaAlertaFormateada;
+
     $fechaActual = new DateTime();
     $fechaAlertaObj = new DateTime($fechaAlerta);
+
 
     $message_response = [
         'status' => 'error',
@@ -17,14 +23,14 @@ function insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta) {
     ];
 
     if ($fechaAlertaObj > $fechaActual) {
-        $message_response['message'] = "La fecha de la alerta no puede ser mayor a la fecha actual.";
+        $message_response['message'] = "La fecha del alerta no puede ser mayor a la fecha actual.";
         return $message_response;
     }
 
     $sql = "INSERT INTO alertas (idUsuario, mensaje, fechaAlerta) VALUES (?, ?, ?)";
 
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("iss", $id, $mensajeAlerta, $fechaAlerta);
+        $stmt->bind_param("iss", $id, $mensajeAlerta, $fechaFinal);
 
         if ($stmt->execute()) {
             $message_response['status'] = 'success';
@@ -48,8 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = Auth::getUserId();
     $mensajeAlerta = $_POST['mensajeAlerta'];
     $fechaAlerta = $_POST['fechaAlerta'];
+    $horaAlerta = $_POST['horaAlerta'];
 
-    $response = insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta);
+    $response = insertarAlerta($conn, $id, $mensajeAlerta, $fechaAlerta, $horaAlerta);
 } else {
     $response['status'] = 'error';
     $response['message'] = "Método de solicitud no válido.";

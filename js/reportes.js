@@ -29,16 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const fechaSeleccionada = fechaInput.value;
         const horaSeleccionada = horaInput.value;
 
+
         if (fechaSeleccionada > hoy) {
             mostrarMensaje('La fecha del reporte no puede ser mayor a la fecha actual.', 'danger');
         } else if (fechaSeleccionada === hoy && horaSeleccionada > horaActual) {
             mostrarMensaje('La hora del reporte no puede ser mayor a la hora actual.', 'danger');
         } else {
-            console.log('Datos enviados:', {
-                mensajeReporte: formData.get('mensajeReporte'),
-                fechaReporte: formData.get('fechaReporte'),
-                horaReporte: formData.get('horaReporte')
-            });
+            // console.log('Datos enviados:', {
+            //     mensajeReporte: formData.get('mensajeReporte'),
+            //     fechaReporte: formData.get('fechaReporte'),
+            //     horaReporte: formData.get('horaReporte')
+            // });
             doReport(formData);
         }
     });
@@ -57,9 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.text())
         .then(text => {
-            console.log('Respuesta cruda:', text);
+            // console.log('Respuesta cruda:', text);
             try {
                 const data = JSON.parse(text);
+                // console.log('Respuesta parseada:', data);
                 const tipo = data.status === 'success' ? 'success' : 'danger';
                 mostrarMensaje(data.message, tipo);
                 form.reset();
@@ -79,14 +81,17 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('../php/obtener_reportes.php')
             .then(response => response.json())
             .then(data => {
+                // console.log('Reportes obtenidos:', data);
                 if (data.status === 'success') {
                     listaReportes.innerHTML = '';
                     data.data.forEach(reporte => {
+                        // console.log('Reporte:', reporte);
                         const item = document.createElement('li');
                         item.className = 'list-group-item';
                         item.innerHTML = `
-                            <strong>${reporte.fechaReporte} ${reporte.horaReporte}</strong><br>
-                            ${reporte.mensajeReporte}
+                            <strong>ID: </strong>${reporte.idReporte}<br>
+                            <strong>Fecha: </strong>${reporte.fechaReporte}<br>
+                            <strong>Mensaje: </strong> ${reporte.mensajeReporte}
                         `;
                         listaReportes.appendChild(item);
                     });
@@ -102,11 +107,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cargarReportes();
 });
-
-
-
-
-
-
-
-
