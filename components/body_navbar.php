@@ -44,7 +44,7 @@ $isMaster = $isDatabaseAvailable && $isLoggedIn && Auth::getUserRole() == 'maste
                             <i class="fas fa-cogs"></i>
                             <span>Alertas</span>
                         </a>
-                        <a class="dropdown-item" href="../pages/registro_consumo.html" data-bs-toggle="tooltip" title="Registro de Consumo">
+                        <a class="dropdown-item" href="../pages/consumo.html" data-bs-toggle="tooltip" title="Registro de Consumo">
                             <i class="fas fa-clipboard-list"></i>
                             <span>Consumo</span>
                             <i class="fa-solid fa-x"></i>

@@ -345,3 +345,79 @@ footer p {
     color: #000000; 
     text-align: justify; 
 }
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    padding-top: 0px;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.container h1 {
+    color: #000000;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.form-consumo {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-consumo .form-group {
+    margin-bottom: 15px;
+}
+
+.form-consumo .form-label {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.form-consumo .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.form-consumo .form-control:focus {
+    border-color: #3262bd;
+    box-shadow: 0 0 0 0.2rem rgba(59, 123, 191, 0.25);
+}
+
+.btn-primary {
+    background-color: #3262bd;
+    border-color: #3262bd;
+    font-size: 1.1rem;
+}
+
+.btn-primary:hover {
+    background-color: #3262bd;
+    border-color: #3262bd;
+}
+
+#mensaje-alerta {
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+#lista-consumos {
+    margin-top: 20px;
+}
+
+#lista-consumos .list-group-item {
+    border-radius: 8px;
+    background-color: #e9ecef;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+
