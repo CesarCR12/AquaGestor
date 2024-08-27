@@ -4,7 +4,7 @@ include '../php/auth_check.php';
 
 header('Content-Type: application/json');
 
-if (!Auth::isLoggedIn() || Auth::getUserRole() === 'user' || !check_login()) {
+if (!Auth::isLoggedIn() || Auth::getUserRole() === null || !check_login()) {
     echo json_encode(['status' => 'error', 'message' => 'No autorizado']);
     exit();
 }
