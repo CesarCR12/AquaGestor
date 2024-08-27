@@ -2,7 +2,4 @@
 
 Proyecto Cliente Servidor.
 
-# SiteMap
-AquaGestor
-
-EN PROGRESO...
+Se utiliza XAMPP para servidor local (localhost)
